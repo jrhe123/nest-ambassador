@@ -1,19 +1,26 @@
 import {
   BadRequestException,
+  NotFoundException,
   Body,
   Controller,
-  NotFoundException,
+  Get,
   Post,
+  Req,
   Res,
+  UseInterceptors,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
-import { RegisterDto } from './dtos/register.dto';
+import { Response, Request } from 'express';
 import * as bcrypt from 'bcryptjs';
-import { LoginDto } from './dtos/login.dto';
+//
+import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
+//
+import { LoginDto } from './dtos/login.dto';
+import { RegisterDto } from './dtos/register.dto';
 
 @Controller()
+@UseInterceptors(ClassSerializerInterceptor) // password
 export class AuthController {
   constructor(
     private userService: UserService,
@@ -57,7 +64,7 @@ export class AuthController {
       throw new BadRequestException('Invalid credential');
     }
     // jwt token
-    const jwtToken = this.jwtService.signAsync({
+    const jwtToken = await this.jwtService.signAsync({
       id: user.id,
     });
     // set cookie
@@ -67,5 +74,17 @@ export class AuthController {
     return {
       message: 'success',
     };
+  }
+
+  @Get('admin/user')
+  async user(@Req() request: Request) {
+    const cookie = request.cookies['jwt'];
+    // retrieve token
+    const { id } = await this.jwtService.verifyAsync(cookie);
+    // find user
+    const user = await this.userService.findOne({
+      id,
+    });
+    return user;
   }
 }
