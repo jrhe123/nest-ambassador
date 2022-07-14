@@ -12,4 +12,10 @@ export class UserService {
   async save(options) {
     return this.userRepository.save(options);
   }
+
+  async findOne(options) {
+    return this.userRepository.findOne({
+      where: options,
+    });
+  }
 }
