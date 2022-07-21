@@ -7,3 +7,9 @@ nest g service auth
 docs:
 
 https://docs.nestjs.com/techniques/cookies
+
+
+seeder: (inside container)
+
+1. docker-compose exec backend sh
+2. seed:ambassadors
