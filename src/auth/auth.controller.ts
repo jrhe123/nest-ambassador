@@ -9,8 +9,8 @@ import {
   Res,
   UseInterceptors,
   ClassSerializerInterceptor,
-  ForbiddenException,
   UseGuards,
+  Put,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import * as bcrypt from 'bcryptjs';
@@ -18,6 +18,8 @@ import * as bcrypt from 'bcryptjs';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 //
+import { InfoDto } from './dtos/info.dto';
+import { PasswordDto } from './dtos/password.dto';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { AuthGuard } from './auth.guard';
@@ -92,6 +94,7 @@ export class AuthController {
     return user;
   }
 
+  @UseGuards(AuthGuard)
   @Post('admin/logout')
   async logout(
     @Res({
@@ -103,5 +106,39 @@ export class AuthController {
     return {
       message: 'success',
     };
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('admin/users/info')
+  async updateInfo(@Req() request: Request, @Body() body: InfoDto) {
+    const cookie = request.cookies['jwt'];
+    // retrieve token
+    const { id } = await this.jwtService.verifyAsync(cookie);
+    // update user
+    await this.userService.update(id, {
+      first_name: body.first_name,
+      last_name: body.last_name,
+      email: body.email,
+    });
+    // return
+    return this.userService.findOne(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('admin/users/password')
+  async updatePassword(@Req() request: Request, @Body() body: PasswordDto) {
+    // valid check
+    const { password_confirm, ...data } = body;
+    if (data.password !== password_confirm) {
+      throw new BadRequestException('Password not match');
+    }
+    const cookie = request.cookies['jwt'];
+    // retrieve token
+    const { id } = await this.jwtService.verifyAsync(cookie);
+    // update pasword
+    await this.userService.update(id, {
+      password: await bcrypt.hash(data.password, 12),
+    });
+    return this.userService.findOne(id);
   }
 }
