@@ -12,4 +12,4 @@ https://docs.nestjs.com/techniques/cookies
 seeder: (inside container)
 
 1. docker-compose exec backend sh
-2. seed:ambassadors
+2. npm run seed:ambassadors
