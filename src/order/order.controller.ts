@@ -1,4 +1,9 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  Controller,
+  Get,
+  UseInterceptors,
+} from '@nestjs/common';
 import { OrderService } from './order.service';
 import { faker } from '@faker-js/faker';
 import { randomInt } from 'crypto';
@@ -12,8 +17,14 @@ export class OrderController {
   ) {}
 
   @Get('admin/orders')
+  @UseInterceptors(ClassSerializerInterceptor)
   all() {
-    return this.orderService.find({});
+    return this.orderService.find(
+      {},
+      {
+        order_items: true,
+      },
+    );
   }
 
   @Get('admin/orders_test')

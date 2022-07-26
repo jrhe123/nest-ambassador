@@ -7,9 +7,10 @@ export abstract class AbstractService {
     return this.repository.save(options);
   }
 
-  async find(options) {
+  async find(options, rOptions?) {
     return this.repository.find({
       where: options,
+      relations: rOptions,
     });
   }
 
