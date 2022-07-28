@@ -1,5 +1,12 @@
 import { Exclude } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Link } from 'src/link/link';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -21,4 +28,7 @@ export class User {
 
   @Column({ default: true })
   is_ambassador: boolean;
+
+  @OneToMany(() => Link, (link) => link.user)
+  links: Link[];
 }

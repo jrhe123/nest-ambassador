@@ -2,12 +2,14 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { faker } from '@faker-js/faker';
 import { randomInt } from 'crypto';
 import { OrderItemService } from './order-item.service';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller()
 export class OrderController {
@@ -16,11 +18,14 @@ export class OrderController {
     private orderItemService: OrderItemService,
   ) {}
 
+  @UseGuards(AuthGuard)
   @Get('admin/orders')
   @UseInterceptors(ClassSerializerInterceptor)
   all() {
     return this.orderService.find(
-      {},
+      {
+        // id: 1,
+      },
       {
         order_items: true,
       },

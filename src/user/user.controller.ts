@@ -2,17 +2,20 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { faker } from '@faker-js/faker';
 import * as bcrypt from 'bcryptjs';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller()
 @UseInterceptors(ClassSerializerInterceptor) // password
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @UseGuards(AuthGuard)
   @Get('admin/ambassadors')
   async ambassadors() {
     return this.userService.find({

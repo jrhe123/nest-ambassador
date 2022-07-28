@@ -1,5 +1,13 @@
 import { Exclude, Expose } from 'class-transformer';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Link } from 'src/link/link';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { OrderItem } from './order-item';
 
 @Entity('orders')
@@ -48,6 +56,12 @@ export class Order {
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
   order_items: OrderItem[];
+
+  @ManyToOne(() => Link, (link) => link.orders, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn({ referencedColumnName: 'code', name: 'code' })
+  link: Link;
 
   @Expose()
   get name() {
