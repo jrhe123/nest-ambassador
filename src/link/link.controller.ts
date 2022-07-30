@@ -10,6 +10,8 @@ import {
 import { Request } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AuthService } from 'src/auth/auth.service';
+import { Order } from 'src/order/order';
+import { Link } from './link';
 import { LinkService } from './link.service';
 
 @Controller()
@@ -40,6 +42,29 @@ export class LinkController {
       products: products.map((id) => {
         return { id };
       }),
+    });
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('ambassador/stats')
+  async stats(@Req() request: Request) {
+    const user = await this.authService.user(request);
+    const links: Link[] = await this.linkService.find(
+      {
+        user,
+      },
+      ['orders'],
+    );
+    return links.map((li) => {
+      const completedOrders: Order[] = li.orders.filter((o) => o.complete);
+      return {
+        code: li.code,
+        count: completedOrders.length,
+        revenue: completedOrders.reduce(
+          (s, o) => (s += o.ambassador_revenue),
+          0,
+        ),
+      };
     });
   }
 }
