@@ -30,6 +30,14 @@ export class OrderController {
     );
   }
 
+  @Get('admin/test_query_builder')
+  async test() {
+    const result = await this.orderService.test3();
+    return {
+      result,
+    };
+  }
+
   @Get('admin/orders_test')
   async ordersTest() {
     //
