@@ -11,6 +11,7 @@ import {
   ClassSerializerInterceptor,
   UseGuards,
   Put,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Response, Request } from 'express';
 import * as bcrypt from 'bcryptjs';
@@ -51,6 +52,7 @@ export class AuthController {
   @Post(['admin/login', 'ambassador/login'])
   async login(
     @Body() body: LoginDto,
+    @Req() request: Request,
     @Res({
       passthrough: true, // save jwt into cookie
     })
@@ -68,9 +70,16 @@ export class AuthController {
     if (!(await bcrypt.compare(password, user.password))) {
       throw new BadRequestException('Invalid credential');
     }
+    // scope
+    const adminLogin = request.path.includes('admin');
+    //
+    if (user.is_ambassador && adminLogin) {
+      throw new UnauthorizedException();
+    }
     // jwt token
     const jwtToken = await this.jwtService.signAsync({
       id: user.id,
+      scope: adminLogin ? 'admin' : 'ambassador',
     });
     // set cookie
     response.cookie('jwt', jwtToken, {
