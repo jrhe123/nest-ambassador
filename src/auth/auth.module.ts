@@ -8,5 +8,6 @@ import { AuthService } from './auth.service';
   imports: [UserModule, SharedModule],
   controllers: [AuthController],
   providers: [AuthService],
+  exports: [AuthService],
 })
 export class AuthModule {}
