@@ -9,6 +9,7 @@ import { UserService } from './user.service';
 import { faker } from '@faker-js/faker';
 import * as bcrypt from 'bcryptjs';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { User } from './user';
 
 @Controller()
 @UseInterceptors(ClassSerializerInterceptor) // password
@@ -20,6 +21,23 @@ export class UserController {
   async ambassadors() {
     return this.userService.find({
       is_ambassador: true,
+    });
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('ambassador/rankings')
+  async rankings() {
+    const ambassadors: User[] = await this.userService.find(
+      {
+        is_ambassador: true,
+      },
+      ['orders', 'orders.order_items'],
+    );
+    return ambassadors.map((am) => {
+      return {
+        name: am.name,
+        revenue: am.revenue,
+      };
     });
   }
 

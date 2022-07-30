@@ -43,4 +43,8 @@ export class User {
       .filter((o) => o.complete)
       .reduce((s, o) => s + o.ambassador_revenue, 0);
   }
+
+  get name(): string {
+    return `${this.first_name} ${this.last_name}`;
+  }
 }
