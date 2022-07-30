@@ -32,8 +32,8 @@ export class AuthController {
     private jwtService: JwtService,
   ) {}
 
-  @Post('admin/register')
-  async register(@Body() body: RegisterDto) {
+  @Post(['admin/register', 'ambassador/register'])
+  async register(@Body() body: RegisterDto, @Req() request: Request) {
     const { password_confirm, ...data } = body;
     // valid check
     if (data.password !== password_confirm) {
@@ -44,11 +44,11 @@ export class AuthController {
     return this.userService.save({
       ...data,
       password: hashed,
-      is_ambassador: false,
+      is_ambassador: request.path.includes('ambassador'),
     });
   }
 
-  @Post('admin/login')
+  @Post(['admin/login', 'ambassador/login'])
   async login(
     @Body() body: LoginDto,
     @Res({
@@ -82,7 +82,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('admin/user')
+  @Get(['admin/user', 'ambassador/user'])
   async user(@Req() request: Request) {
     const cookie = request.cookies['jwt'];
     // retrieve token
@@ -95,7 +95,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
-  @Post('admin/logout')
+  @Post(['admin/logout', 'ambassador/logout'])
   async logout(
     @Res({
       passthrough: true, // pass jwt into cookie
@@ -109,7 +109,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
-  @Put('admin/users/info')
+  @Put(['admin/users/info', 'ambassador/users/info'])
   async updateInfo(@Req() request: Request, @Body() body: InfoDto) {
     const cookie = request.cookies['jwt'];
     // retrieve token
@@ -125,7 +125,7 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
-  @Put('admin/users/password')
+  @Put(['admin/users/password', 'ambassador/users/password'])
   async updatePassword(@Req() request: Request, @Body() body: PasswordDto) {
     // valid check
     const { password_confirm, ...data } = body;
