@@ -26,9 +26,7 @@ export class OrderController {
       {
         // id: 1,
       },
-      {
-        order_items: true,
-      },
+      ['order_items'],
     );
   }
 

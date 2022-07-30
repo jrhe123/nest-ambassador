@@ -1,5 +1,6 @@
 import { Exclude } from 'class-transformer';
 import { Link } from 'src/link/link';
+import { Order } from 'src/order/order';
 import {
   Column,
   Entity,
@@ -31,4 +32,15 @@ export class User {
 
   @OneToMany(() => Link, (link) => link.user)
   links: Link[];
+
+  @OneToMany(() => Order, (order) => order.user, {
+    createForeignKeyConstraints: false,
+  })
+  orders: Order[];
+
+  get revenue(): number {
+    return this.orders
+      .filter((o) => o.complete)
+      .reduce((s, o) => s + o.ambassador_revenue, 0);
+  }
 }

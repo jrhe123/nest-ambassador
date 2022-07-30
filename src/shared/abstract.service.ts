@@ -14,9 +14,10 @@ export abstract class AbstractService {
     });
   }
 
-  async findOne(options) {
+  async findOne(options, rOptions?) {
     return this.repository.findOne({
       where: options,
+      relations: rOptions,
     });
   }
 

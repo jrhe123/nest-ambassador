@@ -13,9 +13,7 @@ export class LinkController {
       {
         user: Number(id),
       },
-      {
-        orders: true,
-      },
+      ['orders'],
     );
   }
 }

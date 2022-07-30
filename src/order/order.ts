@@ -1,5 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 import { Link } from 'src/link/link';
+import { User } from 'src/user/user';
 import {
   Column,
   Entity,
@@ -63,13 +64,22 @@ export class Order {
   @JoinColumn({ referencedColumnName: 'code', name: 'code' })
   link: Link;
 
+  @ManyToOne(() => User, (user) => user.orders, {
+    createForeignKeyConstraints: false,
+  })
+  user: User;
+
   @Expose()
-  get name() {
+  get name(): string {
     return `${this.first_name} ${this.last_name}`;
   }
 
   @Expose()
-  get total() {
+  get total(): number {
     return this.order_items.reduce((s, i) => s + i.admin_revenue, 0);
+  }
+
+  get ambassador_revenue(): number {
+    return this.order_items.reduce((s, i) => s + i.ambassador_revenue, 0);
   }
 }

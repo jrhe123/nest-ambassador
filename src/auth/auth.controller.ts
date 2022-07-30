@@ -96,11 +96,26 @@ export class AuthController {
     const cookie = request.cookies['jwt'];
     // retrieve token
     const { id } = await this.jwtService.verifyAsync(cookie);
-    // find user
-    const user = await this.userService.findOne({
-      id,
-    });
-    return user;
+    // check scope
+    if (request.path.includes('admin')) {
+      // find admin user
+      const adminUser = await this.userService.findOne({
+        id,
+      });
+      return adminUser;
+    }
+    // find ambassador user & revenue
+    const ambassadorUser = await this.userService.findOne(
+      {
+        id,
+      },
+      ['orders', 'orders.order_items'],
+    );
+    const { orders, password, ...others } = ambassadorUser;
+    return {
+      ...others,
+      revenue: ambassadorUser.revenue,
+    };
   }
 
   @UseGuards(AuthGuard)
