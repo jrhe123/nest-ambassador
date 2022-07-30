@@ -18,6 +18,6 @@ import * as redisStore from 'cache-manager-redis-store';
       port: 6379,
     }),
   ],
-  exports: [JwtModule],
+  exports: [JwtModule, CacheModule],
 })
 export class SharedModule {}

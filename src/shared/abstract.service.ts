@@ -7,14 +7,14 @@ export abstract class AbstractService {
     return this.repository.save(options);
   }
 
-  async find(options, rOptions?) {
+  async find(options = {}, rOptions?) {
     return this.repository.find({
       where: options,
       relations: rOptions,
     });
   }
 
-  async findOne(options, rOptions?) {
+  async findOne(options = {}, rOptions?) {
     return this.repository.findOne({
       where: options,
       relations: rOptions,
