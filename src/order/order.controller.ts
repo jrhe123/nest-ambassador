@@ -4,6 +4,7 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  NotFoundException,
   Post,
   UseGuards,
   UseInterceptors,
@@ -23,6 +24,7 @@ import { Product } from 'src/product/product';
 import { DataSource } from 'typeorm';
 import { InjectStripe } from 'nestjs-stripe';
 import Stripe from 'stripe';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Controller()
 export class OrderController {
@@ -33,6 +35,7 @@ export class OrderController {
     private productService: ProductService,
     private dataSource: DataSource,
     @InjectStripe() private readonly stripeClient: Stripe,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -101,12 +104,12 @@ export class OrderController {
         });
       }
       // stripe
+      const checkoutUrl = process.env.STRIPE_CHECKOUT_URL;
       const source = await this.stripeClient.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: lineItems,
-        success_url:
-          'http://localhost:5000/success?source={CHECKOUT_SESSION_ID}',
-        cancel_url: 'http://localhost:5000/error',
+        success_url: `${checkoutUrl}/success?source={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${checkoutUrl}/error`,
       });
       order.transaction_id = source.id;
       await queryRunner.manager.save(order);
@@ -119,6 +122,28 @@ export class OrderController {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  @Post('checkout/orders/confirm')
+  async confirm(@Body('source') source: string) {
+    const order = await this.orderService.findOne(
+      {
+        transaction_id: source,
+      },
+      ['user', 'order_items'],
+    );
+    if (!order) {
+      throw new NotFoundException('order not found');
+    }
+    await this.orderService.update(order.id, {
+      complete: true,
+    });
+    // event
+    await this.eventEmitter.emit('order.completed', order);
+    //
+    return {
+      message: 'success',
+    };
   }
 
   @Get('admin/test_query_builder')

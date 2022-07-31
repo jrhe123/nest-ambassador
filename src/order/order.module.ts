@@ -4,6 +4,7 @@ import { StripeModule } from 'nestjs-stripe';
 import { LinkModule } from 'src/link/link.module';
 import { ProductModule } from 'src/product/product.module';
 import { SharedModule } from 'src/shared/shared.module';
+import { OrderListener } from './listeners/order.listener';
 import { Order } from './order';
 import { OrderItem } from './order-item';
 import { OrderItemService } from './order-item.service';
@@ -22,7 +23,7 @@ import { OrderService } from './order.service';
     }),
   ],
   controllers: [OrderController],
-  providers: [OrderService, OrderItemService],
+  providers: [OrderService, OrderItemService, OrderListener],
   exports: [OrderService, OrderItemService],
 })
 export class OrderModule {}
