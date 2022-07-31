@@ -21,6 +21,8 @@ import { ProductService } from 'src/product/product.service';
 import { OrderItem } from './order-item';
 import { Product } from 'src/product/product';
 import { DataSource } from 'typeorm';
+import { InjectStripe } from 'nestjs-stripe';
+import Stripe from 'stripe';
 
 @Controller()
 export class OrderController {
@@ -30,6 +32,7 @@ export class OrderController {
     private linkService: LinkService,
     private productService: ProductService,
     private dataSource: DataSource,
+    @InjectStripe() private readonly stripeClient: Stripe,
   ) {}
 
   @UseGuards(AuthGuard)
@@ -73,6 +76,8 @@ export class OrderController {
       o.zip = body.zip;
       o.code = body.code;
       const order = await queryRunner.manager.save(o);
+      // stripe
+      const lineItems = [];
       // products
       for (const p of body.products) {
         const product: Product = await this.productService.findOne({
@@ -86,10 +91,28 @@ export class OrderController {
         orderItem.ambassador_revenue = 0.1 * product.price * p.quantity;
         orderItem.admin_revenue = 0.9 * product.price * p.quantity;
         await queryRunner.manager.save(orderItem);
+        lineItems.push({
+          name: product.title,
+          description: product.description,
+          images: [product.image],
+          amount: 100 * product.price,
+          currency: 'cad',
+          quantity: p.quantity,
+        });
       }
+      // stripe
+      const source = await this.stripeClient.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: lineItems,
+        success_url:
+          'http://localhost:5000/success?source={CHECKOUT_SESSION_ID}',
+        cancel_url: 'http://localhost:5000/error',
+      });
+      order.transaction_id = source.id;
+      await queryRunner.manager.save(order);
       //
       await queryRunner.commitTransaction();
-      return order;
+      return source;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       throw new BadRequestException();

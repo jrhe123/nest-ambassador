@@ -17,7 +17,7 @@ import { OrderService } from './order.service';
     LinkModule,
     ProductModule,
     StripeModule.forRoot({
-      apiKey: '',
+      apiKey: process.env.STRIPE_API_KEY,
       apiVersion: '2020-08-27',
     }),
   ],

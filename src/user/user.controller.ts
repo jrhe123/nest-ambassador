@@ -22,6 +22,11 @@ export class UserController {
     private redisService: RedisService,
   ) {}
 
+  @Get('test')
+  async test() {
+    return 123;
+  }
+
   @UseGuards(AuthGuard)
   @Get('admin/ambassadors')
   async ambassadors() {
