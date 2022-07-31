@@ -30,6 +30,7 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/typeorm": "^9.0.0",
     "@types/bcryptjs": "^2.4.2",
+    "@types/stripe": "^8.0.417",
     "bcryptjs": "^2.4.3",
     "cache-manager": "^4.1.0",
     "cache-manager-redis-store": "^2.0.0",
@@ -37,11 +38,13 @@
     "class-validator": "^0.13.2",
     "cookie-parser": "^1.4.6",
     "mysql2": "^2.3.3",
+    "nestjs-stripe": "^1.0.0",
     "passport-jwt": "^4.0.0",
     "redis": "3.1.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
+    "stripe": "^9.16.0",
     "typeorm": "^0.3.7"
   },
   "devDependencies": {

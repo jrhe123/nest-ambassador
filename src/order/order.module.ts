@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { StripeModule } from 'nestjs-stripe';
 import { LinkModule } from 'src/link/link.module';
 import { ProductModule } from 'src/product/product.module';
 import { SharedModule } from 'src/shared/shared.module';
@@ -15,6 +16,10 @@ import { OrderService } from './order.service';
     SharedModule,
     LinkModule,
     ProductModule,
+    StripeModule.forRoot({
+      apiKey: '',
+      apiVersion: '2020-08-27',
+    }),
   ],
   controllers: [OrderController],
   providers: [OrderService, OrderItemService],
