@@ -1,11 +1,13 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Get,
   Param,
   Post,
   Req,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -15,6 +17,7 @@ import { Link } from './link';
 import { LinkService } from './link.service';
 
 @Controller()
+@UseInterceptors(ClassSerializerInterceptor) // remove password
 export class LinkController {
   constructor(
     private linkService: LinkService,
@@ -66,5 +69,15 @@ export class LinkController {
         ),
       };
     });
+  }
+
+  @Get('checkout/links/:code')
+  async link(@Param('code') code: string) {
+    return this.linkService.findOne(
+      {
+        code,
+      },
+      ['user', 'products'],
+    );
   }
 }

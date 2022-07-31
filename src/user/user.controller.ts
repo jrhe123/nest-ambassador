@@ -15,7 +15,7 @@ import { RedisService } from 'src/shared/redis.service';
 import { Response } from 'express';
 
 @Controller()
-@UseInterceptors(ClassSerializerInterceptor) // password
+@UseInterceptors(ClassSerializerInterceptor) // remove password
 export class UserController {
   constructor(
     private readonly userService: UserService,
