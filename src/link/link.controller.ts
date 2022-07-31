@@ -13,6 +13,7 @@ import { Request } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { AuthService } from 'src/auth/auth.service';
 import { Order } from 'src/order/order';
+import { UserService } from 'src/user/user.service';
 import { Link } from './link';
 import { LinkService } from './link.service';
 
@@ -22,16 +23,20 @@ export class LinkController {
   constructor(
     private linkService: LinkService,
     private authService: AuthService,
+    private userService: UserService,
   ) {}
 
   @UseGuards(AuthGuard)
   @Get('admin/users/:id/links')
   async all(@Param('id') id: number) {
+    const user = await this.userService.findOne({
+      id,
+    });
     return this.linkService.find(
       {
-        user: Number(id),
+        user,
       },
-      ['orders'],
+      ['orders', 'orders.order_items'],
     );
   }
 

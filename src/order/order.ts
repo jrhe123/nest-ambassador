@@ -77,10 +77,12 @@ export class Order {
 
   @Expose()
   get total(): number {
+    if (!this.order_items) return 0;
     return this.order_items.reduce((s, i) => s + i.admin_revenue, 0);
   }
 
   get ambassador_revenue(): number {
+    if (!this.order_items) return 0;
     return this.order_items.reduce((s, i) => s + i.ambassador_revenue, 0);
   }
 }
