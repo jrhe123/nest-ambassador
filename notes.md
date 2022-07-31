@@ -13,3 +13,8 @@ seeder: (inside container)
 
 1. docker-compose exec backend sh
 2. npm run seed:ambassadors
+
+mailhog:
+
+http://0.0.0.0:8025/
+run: mailhog

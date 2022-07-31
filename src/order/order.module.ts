@@ -10,6 +10,7 @@ import { OrderItem } from './order-item';
 import { OrderItemService } from './order-item.service';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 @Module({
   imports: [
@@ -20,6 +21,15 @@ import { OrderService } from './order.service';
     StripeModule.forRoot({
       apiKey: process.env.STRIPE_API_KEY,
       apiVersion: '2020-08-27',
+    }),
+    MailerModule.forRoot({
+      transport: {
+        host: 'docker.for.mac.localhost',
+        port: 1025,
+      },
+      defaults: {
+        from: 'no-reply@example.com',
+      },
     }),
   ],
   controllers: [OrderController],
