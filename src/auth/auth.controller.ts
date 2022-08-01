@@ -145,7 +145,7 @@ export class AuthController {
       email: body.email,
     });
     // return
-    return this.userService.findOne(id);
+    return this.userService.findOne({ id });
   }
 
   @UseGuards(AuthGuard)
@@ -163,6 +163,6 @@ export class AuthController {
     await this.userService.update(id, {
       password: await bcrypt.hash(data.password, 12),
     });
-    return this.userService.findOne(id);
+    return this.userService.findOne({ id });
   }
 }
