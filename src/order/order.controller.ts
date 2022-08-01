@@ -83,6 +83,7 @@ export class OrderController {
       const lineItems = [];
       // products
       for (const p of body.products) {
+        if (!p.quantity) continue;
         const product: Product = await this.productService.findOne({
           id: p.product_id,
         });
@@ -102,6 +103,9 @@ export class OrderController {
           currency: 'cad',
           quantity: p.quantity,
         });
+      }
+      if (!lineItems.length) {
+        throw new BadRequestException('No order items');
       }
       // stripe
       const checkoutUrl = process.env.STRIPE_CHECKOUT_URL;
