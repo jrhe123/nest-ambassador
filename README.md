@@ -41,7 +41,7 @@ https://github.com/jrhe123/next-ambassador-checkout
 
 1. How to run the app
 - docker-compose up
-- postman link: https://www.getpostman.com/collections/1a851226aa0e57e9777b
+- postman API collection: https://www.getpostman.com/collections/1a851226aa0e57e9777b
 
 2. Features
 - Typeorm
