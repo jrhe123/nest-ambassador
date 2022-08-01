@@ -39,7 +39,29 @@ https://github.com/jrhe123/next-ambassador-checkout
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+1. How to run the app
+- docker-compose up
+- postman link: https://www.getpostman.com/collections/1a851226aa0e57e9777b
+
+2. Features
+- Typeorm
+- Transactional & Rollback
+- Table relations
+- Form validation & validation pipe
+- Authentication guard / middleware / interceptor
+- OOP: MO, DTO, DO
+- IOC
+- TS supported
+- Abstract classes in shared modules
+- Redis cache manager & Event emitter & Listener
+- Email hog service
+- Stripe payment supported
+- JWT in cookies
+- Generic in express supports RESTful
+- CLI: 
+nest g module user
+nest g service user
+nest g controller user
 
 ## Installation
 
