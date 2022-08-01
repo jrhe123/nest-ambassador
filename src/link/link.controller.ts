@@ -63,6 +63,7 @@ export class LinkController {
       },
       ['orders'],
     );
+    if (!links.length) return [];
     return links.map((li) => {
       const completedOrders: Order[] = li.orders.filter((o) => o.complete);
       return {
