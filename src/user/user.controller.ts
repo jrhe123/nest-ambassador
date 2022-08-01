@@ -58,7 +58,6 @@ export class UserController {
       '-inf',
       'withscores',
       (err, result) => {
-        console.log('result: ', result);
         let score;
         response.send(
           result.reduce((o, r) => {
