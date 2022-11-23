@@ -47,7 +47,7 @@ https://github.com/jrhe123/next-ambassador-checkout
 - Typeorm
 - Transactional & Rollback
 - Table relations
-- Form validation & validation pipe
+- Form validation & validation pipe: class-validator in DTO
 - Authentication guard / middleware / interceptor
 - OOP: MO, DTO, DO
 - IOC
