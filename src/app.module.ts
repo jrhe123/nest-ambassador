@@ -18,7 +18,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
       host: 'db',
       port: 3306,
       username: 'root',
-      password: 'root',
+      password: 'YLwEU8TR2atwLgB',
       database: 'ambassador',
       autoLoadEntities: true,
       synchronize: true,

@@ -9,13 +9,12 @@ services:
     depends_on:
       - db
   db:
-    image: mysql:5.7.22
+    image: mysql:5.7
     restart: always
     environment:
       MYSQL_DATABASE: ambassador
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_PASSWORD: YLwEU8TR2atwLgB
+      MYSQL_ROOT_PASSWORD: YLwEU8TR2atwLgB
     volumes:
       - .dbdata:/var/lib/mysql
     ports:
